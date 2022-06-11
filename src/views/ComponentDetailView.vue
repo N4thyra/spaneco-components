@@ -1,58 +1,93 @@
-<template>
-  <div class="about">
-    <h1 v-if="!isView">Component Detail View</h1>
-    <component :is="asyncComp" :isView="isView" />
-  </div>
-</template>
-
 <script>
-  import { defineAsyncComponent } from 'vue';
-  import { useRoute } from 'vue-router';
-
-  import LoadingComponent from '@/components/app/LoadingComponent.vue';
-  import ErrorComponent from '@/components/app/ErrorComponent.vue';
+  import Prism from "prismjs"; 
+  import "prismjs/themes/prism.css";
 
   export default {
-    name: 'ComponentDetailView', 
-    props: {},
+    name: 'Component', 
     data() {
       return {
+        contentHtml: '', 
+        contenCss: '',
+        contentJs: '',
+        iFrameSrc: '',
         isView: false,
       }
     },
     methods: {
-    },
-  
-    components: {
+      loadData(componentPath) {
+        import(`@/components/development/${componentPath}/component.css`).then( result => this.contenCss = result.default )
+        const promiseHtml = import(`!raw-loader!@/components/development/${componentPath}/component.html`).then( result => this.contentHtml = result.default)
+        const promiseCss = import(`!raw-loader!@/components/development/${componentPath}/component.css`).then( result => this.contenCss = result.default)
+        const promiseJs = import(`!raw-loader!@/components/development/${componentPath}/component.js`).then( result =>  { 
+          this.contentJs = result.default
+          const script = document.createElement("script")
+          script.innerHTML = this.contentJs
+          document.head.appendChild(script)
+        });
+
+        this.iFrameSrc = `/views/${componentPath}`
+
+        Promise.all([promiseHtml, promiseCss, promiseJs]).then( _ => Prism.highlightAll())
+
+      }
     },
     created() {
-
-    },
-    computed: {
-        asyncComp() {
-          const route = useRoute();
-          const params = route.params;
-          const componentPath = params.id.join('/'); 
-
-          this.isView = route?.meta.isView
-
-          try {
-            return defineAsyncComponent({
-              loader: () => import (`@/components/development/${componentPath}/Component.vue`),
-              loadingComponent: LoadingComponent,
-              errorComponent: ErrorComponent,
-              delay: 1000,
-              timeout: 3000,
-              onError(error, retry, fail, attempts) {
-              }
-            })
-          } catch(e) {
-            console.log(e)
-          }
+      this.$watch(() => this.$route.params, (toParams, previousParams) => {
+        if (this.$route.params.id) {
+          const componentPath = this.$route.params.id.join('/')
+          this.loadData(componentPath)
         }
+      })
     },
-    mounted() {}
-}
+    mounted() {
+      this.isView = this.$route.meta.isView
+      const params = this.$route.params
+      const componentPath = params.id.join('/')
+      this.loadData(componentPath)
+    }
+  }
 </script>
 
-<style scoped></style>
+<template>
+  <div class="component js-component" v-html="contentHtml"></div>  
+
+  <div class="markups" v-if="!isView">
+    <div class="markup__col">
+      <p class="markup__title">HTML</p>
+      <pre class="markup__language language-html"><code>{{ contentHtml }}</code></pre>
+    </div>  
+
+    <div class="markup__col">
+      <p class="markup__title">JS</p>
+      <pre class="markup__language language-javascript"><code>{{ contentJs }}</code></pre>
+    </div>
+
+    <div class="markup__col">
+      <p class="markup__title">CSS</p>
+      <pre class="markup__language language-css"><code>{{ contenCss }}</code></pre>
+    </div>
+  </div>
+
+  <iframe :src="iFrameSrc" frameborder="0" v-if="!isView"></iframe>
+</template>
+
+<style scoped>
+  .component {
+    margin-bottom: 50px;
+  }
+
+  .markups {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .markup__col {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+  }
+
+  .markup__language {
+    flex: 1;
+  }
+</style>

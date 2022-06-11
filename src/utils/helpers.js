@@ -1,10 +1,16 @@
-function clipboardCopy(containerId) {
-    const range = document.createRange();
-    range.selectNode(containerId); //changed here
-    window.getSelection().removeAllRanges(); 
-    window.getSelection().addRange(range); 
-    document.execCommand("copy");
-    window.getSelection().removeAllRanges();
+const DEVELOPMENT_PATH = '@/components/development'
+
+export function getComponentPath(path) { 
+    return [DEVELOPMENT_PATH, path, 'component'].join('/')
+} 
+
+export function clipboardCopy(containerId) {
+    const range = document.createRange()
+    range.selectNode(containerId)
+    window.getSelection().removeAllRanges()
+    window.getSelection().addRange(range)
+    document.execCommand("copy")
+    window.getSelection().removeAllRanges()
   
     // $(".js_active_alert").addClass('active');
     // $(".comments__item button").addClass('disabled');
@@ -20,6 +26,3 @@ function clipboardCopy(containerId) {
     // }, 3000);
   }
 
-export { 
-    clipboardCopy,
-}
