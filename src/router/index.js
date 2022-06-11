@@ -25,7 +25,7 @@ const routes = [
         name: 'view-detail',
         component: () => import('../views/ComponentDetailView.vue'),
         meta: {
-          isView: true,
+          isViewHidden: true,
         },
       },
     ]

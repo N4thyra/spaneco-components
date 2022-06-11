@@ -1,16 +1,22 @@
 <script>
-  import Prism from "prismjs"; 
-  import "prismjs/themes/prism.css";
+  import Prism from "prismjs"
+  import "prismjs/themes/prism.css"
+
+  import CopyButton from '@/components/app/CopyButton.vue'
 
   export default {
     name: 'Component', 
+    components: {
+      CopyButton
+    },
     data() {
       return {
         contentHtml: '', 
         contenCss: '',
         contentJs: '',
         iFrameSrc: '',
-        isView: false,
+        isViewHidden: false,
+        isMarkupHidden: true,
       }
     },
     methods: {
@@ -40,7 +46,7 @@
       })
     },
     mounted() {
-      this.isView = this.$route.meta.isView
+      this.isViewHidden = this.$route.meta.isViewHidden
       const params = this.$route.params
       const componentPath = params.id.join('/')
       this.loadData(componentPath)
@@ -51,24 +57,30 @@
 <template>
   <div class="component js-component" v-html="contentHtml"></div>  
 
-  <div class="markups" v-if="!isView">
-    <div class="markup__col">
-      <p class="markup__title">HTML</p>
-      <pre class="markup__language language-html"><code>{{ contentHtml }}</code></pre>
-    </div>  
+  <iframe :src="iFrameSrc" frameborder="0" v-if="!isViewHidden"></iframe>
 
-    <div class="markup__col">
-      <p class="markup__title">JS</p>
-      <pre class="markup__language language-javascript"><code>{{ contentJs }}</code></pre>
+  <button @click="isMarkupHidden = !isMarkupHidden" v-if="!isViewHidden">Show markups</button>
+
+  <transition name="slide" v-if="!isViewHidden">
+    <div :class="['markups', { 'slide': isMarkupHidden }]" v-show="isMarkupHidden">
+      <div class="markup__col">
+        <CopyButton text="Copy <HTML>" :copy-data="contentHtml" />
+        <pre class="js-language-html markup__language language-html"><code>{{ contentHtml }}</code></pre>
+      </div>  
+
+      <div class="markup__col">
+        <CopyButton text="Copy JS" :copy-data="contentJs" />
+        <pre class="markup__language language-javascript"><code>{{ contentJs }}</code></pre>
+      </div>
+
+      <div class="markup__col">
+        <CopyButton text="Copy CSS" :copy-data="contenCss" />
+        <pre class="markup__language language-css"><code>{{ contenCss }}</code></pre>
+      </div>
     </div>
+   </transition>
 
-    <div class="markup__col">
-      <p class="markup__title">CSS</p>
-      <pre class="markup__language language-css"><code>{{ contenCss }}</code></pre>
-    </div>
-  </div>
 
-  <iframe :src="iFrameSrc" frameborder="0" v-if="!isView"></iframe>
 </template>
 
 <style scoped>
@@ -76,18 +88,43 @@
     margin-bottom: 50px;
   }
 
+  .slide-enter { transform: translateY(0) }
+  .slide-enter-active { transform: translateY(100%) }
+
+  .slide-leave { transform: translateY(0) } 
+  .slide-leave-active { transform: translateY(100%) } 
+
+  .slide-enter-active,
+  .slide-leave-active { 
+    transition: all 750ms ease-in-out 
+  }
+
   .markups {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    border-top: 1px solid #e1e1e1;
+    transition: all 300ms ease;
   }
 
   .markup__col {
     display: flex;
     flex-flow: column;
-    height: 100%;
+    flex: 1;
+    border-right: 3px solid #e1e1e1;
+    max-height: min(250px, 50vh);
+    position: relative;
   }
 
   .markup__language {
+    margin: 0;
     flex: 1;
+    overflow: auto;
+    font-size: 13px;
   }
 </style>
