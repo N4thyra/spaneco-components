@@ -2,8 +2,6 @@
 import Prism from "prismjs"
 import "prismjs/themes/prism.css"
 
-import store from '@/store'
-
 import CopyButton from "@/components/app/CopyButton.vue"
 import Viewport from "@/components/app/Viewport.vue"
 
@@ -25,17 +23,19 @@ export default {
     };
   },
   computed: {
-    viewCode() {
-      return store.state.viewCode;
+    isMarkupPanelVisible() {
+      return this.$store.state.isMarkupPanelVisible;
+    },
+    isIframeView() {
+
     }
   },
   methods: {
     loadData(componentPath) {
-      document.querySelectorAll(`.${this.dynamicElementClassname}`).forEach(item => item.remove());
-
       const promiseHtml = import(`!raw-loader!@/components/development/${componentPath}/component.html`).then((result) => (this.contentHtml = result.default))
       const promiseCss = import(`!raw-loader!@/components/development/${componentPath}/component.css`).then((result) =>  {
         this.contenCss = result.default
+
         const style = document.createElement("style");
         style.innerHTML = this.contenCss;
         style.classList.add(`${this.dynamicElementClassname}`);
@@ -43,6 +43,7 @@ export default {
       })
       const promiseJs = import(`!raw-loader!@/components/development/${componentPath}/component.js`).then((result) => {
         this.contentJs = result.default;
+
         const script = document.createElement("script");
         script.innerHTML = this.contentJs;
         script.classList.add(`${this.dynamicElementClassname}`);
@@ -57,9 +58,8 @@ export default {
     },
   },
   created() {
-    this.$watch(
-      () => this.$route.params,
-      (toParams, previousParams) => {
+    this.$watch(() => this.$route.params, (toParams, previousParams) => {
+      document.querySelectorAll(`.${this.dynamicElementClassname}`).forEach(item => item.remove());
         if (this.$route.params.id) {
           const componentPath = this.$route.params.id.join("/");
           this.loadData(componentPath);
@@ -83,8 +83,8 @@ export default {
 
   <transition name="slide" v-if="!isViewHidden">
     <div
-      :class="['markups', { slide: viewCode }]"
-      v-show="viewCode"
+      :class="['markups', { slide: isMarkupPanelVisible }]"
+      v-show="isMarkupPanelVisible"
     >
       <div class="markup__col">
         <CopyButton text="Copy <HTML>" :copy-data="contentHtml" />

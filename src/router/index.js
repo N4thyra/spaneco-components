@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from "../layouts/DefaultLayout.vue";
 import EmptyLayout from "../layouts/EmptyLayout.vue";
+import store from '@/store'
 
 const routes = [
   {
@@ -41,5 +42,10 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  store.commit('setRoute', to);
+  next();
+});
 
 export default router

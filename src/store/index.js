@@ -2,13 +2,20 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    viewCode: false,
+    isMarkupPanelVisible: false,
+    route: null
   },
   getters: {
+    isComponentDetailView(state) {
+     return state.route?.name === 'component-detail';
+    }
   },
   mutations: {
-    toggleViewCode(state) {
-      state.viewCode = !state.viewCode
+    setRoute(state, route) {
+      state.route = route;
+    },
+    toggleMarkupPanel(state) {
+      state.isMarkupPanelVisible = !state.isMarkupPanelVisible
     }
   },
   actions: {
