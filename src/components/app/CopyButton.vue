@@ -18,8 +18,7 @@ export default {
   },
   methods: {
     copy() {
-      navigator.clipboard.writeText(this.copyData).then(
-        () => {
+      navigator.clipboard.writeText(this.copyData).then(() => {
           console.log(this.msgCopySuccess);
           Toastify({
             text: this.msgCopySuccess,
@@ -35,8 +34,7 @@ export default {
             onClick: function () {},
           }).showToast();
         },
-        (err) => {
-          console.log(this.msgCopyError);
+        (err) => {console.log(this.msgCopyError);
           Toastify({
             text: this.msgCopyError, 
             duration: 3000,

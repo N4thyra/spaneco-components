@@ -33,45 +33,50 @@ export default {
   methods: {
     async loadData(componentPath) {
       try {
-        const promiseHtml = await import(`!raw-loader!@/components/development/${componentPath}/component.html`);
-        this.contentHtml = promiseHtml.default
-      } catch(e) {
-        this.contentHtml = getModuleNotFoundMsg('HTML');
-        console.log(e)
+        const promiseHtml = await import(
+          `!raw-loader!@/components/development/${componentPath}/c.html`
+        );
+        this.contentHtml = promiseHtml.default;
+      } catch (e) {
+        this.contentHtml = getModuleNotFoundMsg("HTML");
+        console.warn(e);
       }
 
       try {
-        const promiseCss = await import(`!raw-loader!@/components/development/${componentPath}/component.css`);
-        this.contenCss = promiseCss.default
-        
+        const promiseCss = await import(
+          `!raw-loader!@/components/development/${componentPath}/c.css`
+        );
+        this.contenCss = promiseCss.default;
+
         const style = document.createElement("style");
         style.innerHTML = this.contenCss;
         style.classList.add(`${this.dynamicElementClassname}`);
         document.head.appendChild(style);
-      } catch(e) {
-        this.contenCss = getModuleNotFoundMsg('CSS');
-        console.log(e)
+      } catch (e) {
+        this.contenCss = getModuleNotFoundMsg("CSS");
+        console.warn(e);
       }
 
-
       try {
-        const promiseJs = await import(`!raw-loader!@/components/development/${componentPath}/component.js`);
-        this.contentJs = promiseJs.default
+        const promiseJs = await import(
+          `!raw-loader!@/components/development/${componentPath}/c.js`
+        );
+        this.contentJs = promiseJs.default;
 
         const script = document.createElement("script");
         script.innerHTML = this.contentJs;
         script.classList.add(`${this.dynamicElementClassname}`);
         document.body.appendChild(script);
-      } catch(e) {
-        this.contentJs = getModuleNotFoundMsg('JS');
-        console.log(e) 
+      } catch (e) {
+        this.contentJs = getModuleNotFoundMsg("JS");
+        console.warn(e);
       }
 
       setTimeout(() => {
-        Prism.highlightAll()
-      })
+        Prism.highlightAll();
+      });
 
-      this.iFrameSrc = `/views/${componentPath}`
+      this.iFrameSrc = `/views/${componentPath}`;
     },
   },
   created() {
@@ -82,8 +87,12 @@ export default {
           .querySelectorAll(`.${this.dynamicElementClassname}`)
           .forEach((item) => item.remove());
         if (this.$route.params.id) {
-          const componentPath = this.$route.params.id.join("/");
-          this.loadData(componentPath);
+          try {
+            const componentPath = this.$route.params.id.join("/");
+            this.loadData(componentPath);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     );
@@ -91,8 +100,12 @@ export default {
   mounted() {
     this.isViewHidden = this.$route.meta.isViewHidden;
     const params = this.$route.params;
-    const componentPath = params.id.join("/");
-    this.loadData(componentPath);
+    try {
+      const componentPath = params.id.join("/");
+      this.loadData(componentPath);
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 </script>
@@ -100,7 +113,7 @@ export default {
 <template>
   <div class="component js-component" v-html="contentHtml"></div>
 
-  <Viewport :iFrameSrc="iFrameSrc" v-if="!isViewHidden" />
+  <Viewport :iFrameSrc="iFrameSrc" v-if="!isViewHidden"/>
 
   <transition name="slide" v-if="!isViewHidden">
     <div
