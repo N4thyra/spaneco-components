@@ -36,10 +36,9 @@ export default {
 
 <template>
   Categories
-  <div v-for="category, key in categories" :key="key">
-    <router-link :to="category.nodePath">
-      {{ category }}
-    </router-link>
+  <p v-if="!categories.length">Nothing here...</p>
+  <div v-for="category, key in categories" :key="key" v-else>
+    <router-link :to="category.nodePath">{{ category }}</router-link>
     <Iframe
       v-if="category.detail"
       :src="getViewUrl(category.nodePath)"
@@ -49,3 +48,6 @@ export default {
   </div>
 
 </template>
+
+<style scoped>
+</style>
