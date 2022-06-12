@@ -183,7 +183,6 @@ export default {
 
 <style scoped>
 .component {
-  margin-bottom: 50px;
 }
 
 .slide-enter {
@@ -267,19 +266,5 @@ export default {
 
 .viewport {
   width: 400px;
-}
-
-.viewport__body {
-  background: #f7f8f8;
-  border-radius: 10px;
-  padding: 20px;
-  display: block;
-}
-
-.viewport__iframe {
-  width: 360px;
-  border: none;
-  background-color: #fff;
-  overflow-x: hidden;
 }
 </style>

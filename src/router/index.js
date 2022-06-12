@@ -11,9 +11,14 @@ const routes = [
     component: DefaultLayout,
     children: [
       { 
-        path: '/components/:id*', 
+        path: '/components/detail/:id*', 
         name: 'component-detail',
         component: () => import('../views/ComponentDetailView.vue')
+      },
+      { 
+        path: '/components/:id*', 
+        name: 'component-category',
+        component: () => import('../views/ComponentCategoryView.vue')
       },
     ]
   },

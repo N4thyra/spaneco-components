@@ -3,12 +3,12 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     isMarkupPanelVisible: false,
-    route: null
+    route: null,
   },
   getters: {
     isComponentDetailView(state) {
      return state.route?.name === 'component-detail';
-    }
+    },
   },
   mutations: {
     setRoute(state, route) {
