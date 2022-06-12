@@ -64,11 +64,12 @@ export default {
         document.body.appendChild(script);
       } catch(e) {
         this.contentJs = getModuleNotFoundMsg('JS');
-        console.log(e)
+        console.log(e) 
       }
 
-
-      Prism.highlightAll()
+      setTimeout(() => {
+        Prism.highlightAll()
+      })
 
       this.iFrameSrc = `/views/${componentPath}`
     },
