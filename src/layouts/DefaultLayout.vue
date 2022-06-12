@@ -1,9 +1,23 @@
+<script>
+  import store from '@/store'
+
+  export default {
+    name: "DefaultLayout",
+    methods: {
+      toggleViewCode() {
+        store.commit('toggleViewCode')
+      }
+    },
+  }
+</script>
+
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/components/buttons/button-epic">Epic Button</router-link> |
     <router-link to="/components/headers/fun">Fun Header</router-link>
   </nav>
+  <button @click="toggleViewCode">ToggleCode</button>
   <router-view/>
 </template>
 

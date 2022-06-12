@@ -2,6 +2,8 @@
 import Prism from "prismjs"
 import "prismjs/themes/prism.css"
 
+import store from '@/store'
+
 import CopyButton from "@/components/app/CopyButton.vue"
 import Viewport from "@/components/app/Viewport.vue"
 
@@ -19,33 +21,39 @@ export default {
       iFrameSrc: "",
       isViewHidden: false,
       isMarkupHidden: true,
+      dynamicElementClassname: "js-dynamically-created",
     };
+  },
+  computed: {
+    viewCode() {
+      return store.state.viewCode;
+    }
   },
   methods: {
     loadData(componentPath) {
-      import(`@/components/development/${componentPath}/component.css`).then(
-        (result) => (this.contenCss = result.default)
-      );
-      const promiseHtml = import(
-        `!raw-loader!@/components/development/${componentPath}/component.html`
-      ).then((result) => (this.contentHtml = result.default));
-      const promiseCss = import(
-        `!raw-loader!@/components/development/${componentPath}/component.css`
-      ).then((result) => (this.contenCss = result.default));
-      const promiseJs = import(
-        `!raw-loader!@/components/development/${componentPath}/component.js`
-      ).then((result) => {
+      document.querySelectorAll(`.${this.dynamicElementClassname}`).forEach(item => item.remove());
+
+      const promiseHtml = import(`!raw-loader!@/components/development/${componentPath}/component.html`).then((result) => (this.contentHtml = result.default))
+      const promiseCss = import(`!raw-loader!@/components/development/${componentPath}/component.css`).then((result) =>  {
+        this.contenCss = result.default
+        const style = document.createElement("style");
+        style.innerHTML = this.contenCss;
+        style.classList.add(`${this.dynamicElementClassname}`);
+        document.head.appendChild(style);
+      })
+      const promiseJs = import(`!raw-loader!@/components/development/${componentPath}/component.js`).then((result) => {
         this.contentJs = result.default;
         const script = document.createElement("script");
         script.innerHTML = this.contentJs;
-        document.head.appendChild(script);
-      });
+        script.classList.add(`${this.dynamicElementClassname}`);
+        document.body.appendChild(script);
+      })
 
-      this.iFrameSrc = `/views/${componentPath}`;
+      this.iFrameSrc = `/views/${componentPath}`
 
       Promise.all([promiseHtml, promiseCss, promiseJs]).then((_) =>
         Prism.highlightAll()
-      );
+      )
     },
   },
   created() {
@@ -73,14 +81,10 @@ export default {
 
   <Viewport :iFrameSrc="iFrameSrc" v-if="!isViewHidden"/>
 
-  <button @click="isMarkupHidden = !isMarkupHidden" v-if="!isViewHidden">
-    Show markups
-  </button>
-
   <transition name="slide" v-if="!isViewHidden">
     <div
-      :class="['markups', { slide: isMarkupHidden }]"
-      v-show="isMarkupHidden"
+      :class="['markups', { slide: viewCode }]"
+      v-show="viewCode"
     >
       <div class="markup__col">
         <CopyButton text="Copy <HTML>" :copy-data="contentHtml" />
