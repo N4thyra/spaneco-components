@@ -171,17 +171,28 @@ export default {
   display: flex;
   flex-flow: column;
   flex: 1;
-  border-right: 3px solid #e1e1e1;
   max-height: min(250px, 50vh);
   position: relative;
-  background-color: #1d1e22;
+}
+
+.markup__col::after {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 0;
+  width: var(--app-markup-col-border-width);
+  height: 100%;
+  background-color: var(--c-app-markup-col-bg);
+  opacity: .1;
 }
 
 .markup__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #aaaebc;
+  color: var(--c-app-markup-heading-fc);
+  background-color: var(--c-app-markup-col-bg);
+  margin-right: var(--app-markup-col-border-width);
 }
 
 .markup__bookmark {

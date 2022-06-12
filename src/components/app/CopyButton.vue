@@ -6,7 +6,7 @@ export default {
   name: "CopyButton",
   props: {
     msgCopySuccess: {
-      default: "Copied!",
+      default: "Copied",
     },
     msgCopyError: {
       default: "Oops! Something went wrong.",
@@ -30,7 +30,7 @@ export default {
             position: "right", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-              background: "#a7d590",
+              background: "#32ba7c",
             },
             onClick: function () {},
           }).showToast();
@@ -46,7 +46,7 @@ export default {
             position: "right", // `left`, `center` or `right`
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {
-              background: "#ffc480",
+              background: "#f15249",
             },
             onClick: function () {},
           }).showToast();
@@ -64,21 +64,25 @@ export default {
 </template>
 
 <style scoped>
-.copy-btn {
-  all: unset !important;
-  align-items: center;
-  justify-content: center;
-  display: inline-flex !important;
-  color: #fff !important;
-  padding: 5px !important;
-  border: none !important;
-  cursor: pointer !important;
-  margin: 0 8px !important;
-}
+  .copy-btn {
+    all: unset !important;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex !important;
+    color: #fff !important;
+    padding: 5px !important;
+    border: none !important;
+    cursor: pointer !important;
+    margin: 0 8px !important;
+    transition: all .3s ease-in-out !important;
+  }
 
-.copy-btn__svg {
-  width: 17px;
-  height: 17px;
-}
+  .copy-btn:hover {
+    background-color: rgba(255, 255, 255, .1) !important;
+  }
 
+  .copy-btn__svg {
+    width: 17px;
+    height: 17px;
+  }
 </style>
