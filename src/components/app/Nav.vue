@@ -25,7 +25,7 @@
       class="nav-menu__link"
       :to="getUrl(node)"
     >
-      {{ node.label }} {{ isDetail(node)  ? 'detail' : 'category' }}
+      {{ node.label }} {{ isDetail(node)  ? '(d)' : '(c)' }}
     </router-link>
   </div>
 </template>
