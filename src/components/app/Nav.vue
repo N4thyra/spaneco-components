@@ -16,18 +16,21 @@
 </script>
 
 <template>
-  <div 
+  <ul 
       v-for="node, key in nodes" 
       :key="key"
       :class="['nav-menu', `level-${depth}`]"
   >
-    <router-link 
-      class="nav-menu__link"
-      :to="getUrl(node)"
-    >
-      {{ node.label }} {{ isDetail(node)  ? '(d)' : '(c)' }}
-    </router-link>
-  </div>
+    <li>
+      <router-link 
+        class="nav-menu__link"
+        :to="getUrl(node)"
+      >
+        {{ node.label }} {{ isDetail(node)  ? '(d)' : '(c)' }}
+      </router-link>
+      <Nav v-if="node.children" :nodes="node.children" :depth="depth + 1"/>
+    </li>
+  </ul>
 </template>
 
 <style scoped>

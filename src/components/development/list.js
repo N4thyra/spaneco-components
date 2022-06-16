@@ -49,6 +49,6 @@ const buildTree = (acc, node, tmpNode) => {
     return acc;
 };
 
-const tree = list.reduce((acc, node) => buildTree(acc, node, {...node}), { children: [] }).children;
+export const menuTree = list.reduce((acc, node) => buildTree(acc, node, {...node}), { children: [] }).children;
 
  

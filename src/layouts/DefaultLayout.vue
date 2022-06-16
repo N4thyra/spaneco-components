@@ -1,7 +1,7 @@
 <script>
   import store from '@/store'
   import Nav from '@/components/app/Nav.vue'
-  import { list } from '@/components/development/list'
+  import { menuTree } from '@/components/development/list'
 
   export default {
     name: "DefaultLayout",
@@ -10,7 +10,7 @@
     },
     data() {
       return {
-        list,
+        menuTree,
       }
     },
     methods: {
@@ -30,7 +30,8 @@
   <nav>
     <router-link to="/" class="nav-menu__link">Home</router-link>
     <Nav
-      :nodes="list"
+      :nodes="menuTree"
+      :depth="1"
     />
   </nav>
   <button class="code-btn" @click="toggleMarkupPanel" v-if="isComponentDetailView">
@@ -54,26 +55,5 @@
 
   .code-btn__svg {
     width: 25px;
-  }
-
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-
-  nav {
-    padding: 30px;
-  }
-
-  nav a {
-    font-weight: bold;
-    color: #2c3e50;
-  }
-
-  nav a.router-link-exact-active {
-    color: #42b983;
   }
 </style>
